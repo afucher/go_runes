@@ -37,13 +37,13 @@ func TestParseLine(t *testing.T) {
 	wantChar := '0'
 	input := "0030;DIGIT ZERO;Nd;0;EN;;0;0;0;N;;;;;"
 	// When
-	gotName, gotChar := parseLine(input)
+	got := parseLine(input)
 	// Then
-	if gotName != wantName {
-		t.Errorf("Name => Got: %#v, want: %#v", gotName, wantName)
+	if got.name != wantName {
+		t.Errorf("Name => Got: %#v, want: %#v", got.name, wantName)
 	}
-	if gotChar != wantChar {
-		t.Errorf("Char => Got: %#v, want: %#v", gotChar, wantChar)
+	if got.code != wantChar {
+		t.Errorf("Char => Got: %#v, want: %#v", got.code, wantChar)
 	}
 }
 

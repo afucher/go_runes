@@ -11,6 +11,15 @@ import (
 	"github.com/standupdev/strset"
 )
 
+type unicodeInfo struct {
+	name string
+	code rune
+}
+
+func (info unicodeInfo) String() string {
+	return fmt.Sprintf("U+%04X\t%c\t%s", info.code, info.code, info.name)
+}
+
 func main() {
 	if len(os.Args) > 1 {
 		query := strings.Join(os.Args[1:], " ")
@@ -30,10 +39,10 @@ func main() {
 	}
 }
 
-func parseLine(line string) (string, rune) {
+func parseLine(line string) unicodeInfo {
 	fields := strings.Split(line, ";")
 	code, _ := strconv.ParseInt(fields[0], 16, 32)
-	return fields[1], rune(code)
+	return unicodeInfo{fields[1], rune(code)}
 }
 
 func match(query strset.Set, name string) bool {
@@ -53,9 +62,9 @@ func filter(data io.Reader, query string, lines chan<- string) {
 	scanner := bufio.NewScanner(data)
 	myMatcher := matcher(queryTerms)
 	for scanner.Scan() {
-		name, code := parseLine(scanner.Text())
-		if myMatcher(name) {
-			lines <- fmt.Sprintf("U+%04X\t%c\t%s", code, code, name)
+		info := parseLine(scanner.Text())
+		if myMatcher(info.name) {
+			lines <- info.String()
 		}
 	}
 	close(lines)
