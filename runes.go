@@ -19,7 +19,11 @@ func main() {
 			panic(err)
 		}
 		defer data.Close()
-		fmt.Println(strings.Join(Filter(data, query), "\n"))
+		linesResult := make(chan string)
+		go Filter(data, query, linesResult)
+		for line := range linesResult {
+			fmt.Println(line)
+		}
 	} else {
 		fmt.Println("Please enter one or more words to search.")
 
@@ -44,17 +48,15 @@ func matcher(query strset.Set) func(name string) bool {
 	}
 }
 
-func Filter(data io.Reader, query string) []string {
+func Filter(data io.Reader, query string, lines chan<- string) {
 	queryTerms := strset.MakeFromText(strings.ToUpper(query))
 	scanner := bufio.NewScanner(data)
-	result := []string{}
 	myMatcher := matcher(queryTerms)
 	for scanner.Scan() {
 		name, code := parseLine(scanner.Text())
 		if myMatcher(name) {
-			line := fmt.Sprintf("U+%04X\t%c\t%s", code, code, name)
-			result = append(result, line)
+			lines <- fmt.Sprintf("U+%04X\t%c\t%s", code, code, name)
 		}
 	}
-	return result
+	close(lines)
 }
