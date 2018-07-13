@@ -17,7 +17,7 @@ func Example() {
 	// Please enter one or more words to search.
 }
 
-func ExampleMain_With_Results() {
+func Example_with_Results() {
 	oldArgs := os.Args
 	os.Args = []string{"", "chess black"}
 	main()
@@ -81,7 +81,7 @@ func TestFilter(t *testing.T) {
 	data := strings.NewReader(dataStr)
 	outputChannel := make(chan string, 1)
 
-	go Filter(data, query, outputChannel)
+	go filter(data, query, outputChannel)
 	for line := range outputChannel {
 		got = append(got, line)
 	}

@@ -20,7 +20,7 @@ func main() {
 		}
 		defer data.Close()
 		linesResult := make(chan string)
-		go Filter(data, query, linesResult)
+		go filter(data, query, linesResult)
 		for line := range linesResult {
 			fmt.Println(line)
 		}
@@ -48,7 +48,7 @@ func matcher(query strset.Set) func(name string) bool {
 	}
 }
 
-func Filter(data io.Reader, query string, lines chan<- string) {
+func filter(data io.Reader, query string, lines chan<- string) {
 	queryTerms := strset.MakeFromText(strings.ToUpper(query))
 	scanner := bufio.NewScanner(data)
 	myMatcher := matcher(queryTerms)
