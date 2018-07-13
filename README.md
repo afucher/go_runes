@@ -3,3 +3,4 @@ Repositório baseado no [Workshop de TDD com GO](https://github.com/standupdev/g
 Alterações: 
  - Implementação de Closure
  - Teste de assinatura de função
+ - Uso de goroutine para filtor
