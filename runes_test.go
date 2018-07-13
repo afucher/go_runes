@@ -76,13 +76,12 @@ const dataStr = `003C;LESS-THAN SIGN;Sm;0;ON;;;;;Y;;;;;
 `
 
 func TestFilter(t *testing.T) {
-	t.Skip()
 	got := []string{}
 	query := "sign"
 	data := strings.NewReader(dataStr)
-	outputChannel := make(chan string)
+	outputChannel := make(chan string, 1)
 
-	Filter(data, query, outputChannel)
+	go Filter(data, query, outputChannel)
 	for line := range outputChannel {
 		got = append(got, line)
 	}
